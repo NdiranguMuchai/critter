@@ -4,11 +4,9 @@ import com.udacity.jdnd.course3.critter.model.Customer;
 import com.udacity.jdnd.course3.critter.model.Pet;
 import com.udacity.jdnd.course3.critter.repository.CustomerRepository;
 import com.udacity.jdnd.course3.critter.repository.PetRepository;
-import com.udacity.jdnd.course3.critter.service.CustomerService;
 import com.udacity.jdnd.course3.critter.service.PetService;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -38,8 +36,8 @@ public class PetServiceImpl implements PetService {
 
     @Override
     public List<Pet> findByOwnerId(Long ownerId) {
+        return petRepository.findAllByOwnerId(ownerId);
 
-        return null;
     }
 
 

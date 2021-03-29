@@ -37,9 +37,11 @@ private final PetService petService;
         return petService.list();
     }
 
+//try using PetDTO and not Pet
     @GetMapping("/owner/{ownerId}")
-    public List<PetDTO> getPetsByOwner(@PathVariable long ownerId) {
-        throw new UnsupportedOperationException();
+    public List<Pet> getPetsByOwner(@PathVariable long ownerId) {
+        return petService.findByOwnerId(ownerId);
+
     }
 
 
