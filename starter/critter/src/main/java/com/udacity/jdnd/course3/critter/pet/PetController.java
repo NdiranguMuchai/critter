@@ -1,5 +1,6 @@
 package com.udacity.jdnd.course3.critter.pet;
 
+import com.udacity.jdnd.course3.critter.model.Customer;
 import com.udacity.jdnd.course3.critter.model.Pet;
 import com.udacity.jdnd.course3.critter.service.PetService;
 import org.springframework.beans.BeanUtils;
@@ -39,6 +40,12 @@ private final PetService petService;
     @GetMapping("/owner/{ownerId}")
     public List<PetDTO> getPetsByOwner(@PathVariable long ownerId) {
         throw new UnsupportedOperationException();
+    }
+
+
+    @PutMapping("/{petId}/addOwner/{ownerId}")
+    public  PetDTO addOwner(@PathVariable Long petId, @PathVariable Long ownerId) throws Exception{
+        return convertPetToDTO(petService.addOwner(petId, ownerId));
     }
 
 

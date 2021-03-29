@@ -2,6 +2,7 @@ package com.udacity.jdnd.course3.critter;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import com.udacity.jdnd.course3.critter.model.Customer;
 import com.udacity.jdnd.course3.critter.pet.PetController;
 import com.udacity.jdnd.course3.critter.pet.PetDTO;
 import com.udacity.jdnd.course3.critter.pet.PetType;
@@ -10,6 +11,7 @@ import com.udacity.jdnd.course3.critter.schedule.ScheduleDTO;
 import com.udacity.jdnd.course3.critter.user.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
@@ -46,7 +48,7 @@ public class CritterFunctionalTest {
     public void testCreateCustomer(){
         CustomerDTO customerDTO = createCustomerDTO();
         CustomerDTO newCustomer = userController.saveCustomer(customerDTO);
-        CustomerDTO retrievedCustomer = userController.getAllCustomers().get(0);
+        CustomerDTO retrievedCustomer = convertCustomerToDTO(userController.getAllCustomers().get(0));
         Assertions.assertEquals(newCustomer.getName(), customerDTO.getName());
         Assertions.assertEquals(newCustomer.getId(), retrievedCustomer.getId());
         Assertions.assertTrue(retrievedCustomer.getId() > 0);
@@ -82,7 +84,7 @@ public class CritterFunctionalTest {
         Assertions.assertEquals(newPet.getName(), pets.get(0).getName());
 
         //check to make sure customer now also contains pet
-        CustomerDTO retrievedCustomer = userController.getAllCustomers().get(0);
+        CustomerDTO retrievedCustomer = convertCustomerToDTO(userController.getAllCustomers().get(0));
         Assertions.assertTrue(retrievedCustomer.getPetIds() != null && retrievedCustomer.getPetIds().size() > 0);
         Assertions.assertEquals(retrievedCustomer.getPetIds().get(0), retrievedPet.getId());
     }
@@ -106,7 +108,7 @@ public class CritterFunctionalTest {
     }
 
     @Test
-    public void testFindOwnerByPet() {
+    public void testFindOwnerByPet() throws Exception{
         CustomerDTO customerDTO = createCustomerDTO();
         CustomerDTO newCustomer = userController.saveCustomer(customerDTO);
 
@@ -194,7 +196,7 @@ public class CritterFunctionalTest {
     }
 
     @Test
-    public void testFindScheduleByEntities() {
+    public void testFindScheduleByEntities() throws Exception{
         ScheduleDTO sched1 = populateSchedule(1, 2, LocalDate.of(2019, 12, 25), Sets.newHashSet(EmployeeSkill.FEEDING, EmployeeSkill.WALKING));
         ScheduleDTO sched2 = populateSchedule(3, 1, LocalDate.of(2019, 12, 26), Sets.newHashSet(EmployeeSkill.PETTING));
 
@@ -302,4 +304,15 @@ public class CritterFunctionalTest {
         Assertions.assertEquals(sched1.getDate(), sched2.getDate());
     }
 
+    private CustomerDTO convertCustomerToDTO(Customer customer){
+        CustomerDTO customerDTO = new CustomerDTO();
+        BeanUtils.copyProperties(customer, customerDTO);
+        return customerDTO;
+    }
+
+    private Customer convertDTOToCustomer(CustomerDTO customerDTO){
+        Customer customer = new Customer();
+        BeanUtils.copyProperties(customerDTO, customer);
+        return customer;
+    }
 }

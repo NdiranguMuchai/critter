@@ -1,8 +1,14 @@
 package com.udacity.jdnd.course3.critter.user;
 
+import com.udacity.jdnd.course3.critter.model.Customer;
+import com.udacity.jdnd.course3.critter.model.Pet;
+import com.udacity.jdnd.course3.critter.pet.PetDTO;
+import com.udacity.jdnd.course3.critter.service.CustomerService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.DayOfWeek;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -15,20 +21,26 @@ import java.util.Set;
 @RestController
 @RequestMapping("/user")
 public class UserController {
+    private final CustomerService customerService;
+
+    public UserController(CustomerService customerService) {
+        this.customerService = customerService;
+    }
 
     @PostMapping("/customer")
     public CustomerDTO saveCustomer(@RequestBody CustomerDTO customerDTO){
-        throw new UnsupportedOperationException();
+        Customer customer = convertDTOToCustomer(customerDTO);
+        return convertCustomerToDTO(customerService.save(customer));
     }
 
     @GetMapping("/customer")
-    public List<CustomerDTO> getAllCustomers(){
-        throw new UnsupportedOperationException();
+    public List<Customer> getAllCustomers(){
+        return customerService.list();
     }
 
     @GetMapping("/customer/pet/{petId}")
-    public CustomerDTO getOwnerByPet(@PathVariable long petId){
-        throw new UnsupportedOperationException();
+    public CustomerDTO getOwnerByPet(@PathVariable long petId) throws Exception{
+        return convertCustomerToDTO(customerService.findOwnerByPetId(petId));
     }
 
     @PostMapping("/employee")
@@ -49,6 +61,18 @@ public class UserController {
     @GetMapping("/employee/availability")
     public List<EmployeeDTO> findEmployeesForService(@RequestBody EmployeeRequestDTO employeeDTO) {
         throw new UnsupportedOperationException();
+    }
+
+    private CustomerDTO convertCustomerToDTO(Customer customer){
+        CustomerDTO customerDTO = new CustomerDTO();
+        BeanUtils.copyProperties(customer, customerDTO);
+        return customerDTO;
+    }
+
+    private Customer convertDTOToCustomer(CustomerDTO customerDTO){
+        Customer customer = new Customer();
+        BeanUtils.copyProperties(customerDTO, customer);
+        return customer;
     }
 
 }
