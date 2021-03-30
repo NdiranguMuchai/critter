@@ -3,17 +3,19 @@ package com.udacity.jdnd.course3.critter.service.impl;
 import com.udacity.jdnd.course3.critter.model.Customer;
 import com.udacity.jdnd.course3.critter.model.Pet;
 import com.udacity.jdnd.course3.critter.repository.CustomerRepository;
+import com.udacity.jdnd.course3.critter.repository.PetRepository;
 import com.udacity.jdnd.course3.critter.service.CustomerService;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class CustomerServiceImpl implements CustomerService {
     private final CustomerRepository customerRepository;
-    public CustomerServiceImpl(CustomerRepository customerRepository) {
+    private final PetRepository petRepository;
+    public CustomerServiceImpl(CustomerRepository customerRepository, PetRepository petRepository) {
         this.customerRepository = customerRepository;
+        this.petRepository = petRepository;
     }
 
     @Override
@@ -42,13 +44,11 @@ public class CustomerServiceImpl implements CustomerService {
         }
     }
     @Override
-    public void addPet(Customer customer, Pet pet){
-        List<Pet> pets = customer.getPets();
-        if (pets == null) {
-            pets = new ArrayList<Pet>();
-        }
-        pets.add(pet);
-        customer.setPets(pets);
-        customerRepository.save(customer);
+    public Customer addPet(Long ownerId, Long petId) throws Exception{
+        Customer owner = customerRepository.findById(ownerId).orElseThrow(()-> new Exception("Owner with id "+ownerId+" not found"));
+        Pet pet = petRepository.findById(petId).orElseThrow(()-> new Exception("Pet with id "+petId+" not found"));
+
+        owner.getPets().add(pet);
+       return customerRepository.save(owner);
     }
 }

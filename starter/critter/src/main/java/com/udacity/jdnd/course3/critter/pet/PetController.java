@@ -37,7 +37,12 @@ private final PetService petService;
         return petService.list();
     }
 
-//try using PetDTO and not Pet
+/**
+ *  try using PetDTO and not Pet check other methods that are using List<>
+ *  alternatively use @JsonView approach
+ *  add check for non existent owner
+ */
+
     @GetMapping("/owner/{ownerId}")
     public List<Pet> getPetsByOwner(@PathVariable long ownerId) {
         return petService.findByOwnerId(ownerId);

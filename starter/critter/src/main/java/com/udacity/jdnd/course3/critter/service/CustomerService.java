@@ -9,5 +9,5 @@ public interface CustomerService {
     Customer save(Customer customer);
     List<Customer>list();
     Customer findOwnerByPetId(Long petId) throws Exception;
-    void addPet(Customer customer, Pet pet);
+    Customer addPet(Long ownerId, Long petId) throws Exception;
 }

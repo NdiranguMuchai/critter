@@ -55,7 +55,7 @@ public class CritterFunctionalTest {
     }
 
     @Test
-    public void testCreateEmployee(){
+    public void testCreateEmployee() throws Exception{
         EmployeeDTO employeeDTO = createEmployeeDTO();
         EmployeeDTO newEmployee = userController.saveEmployee(employeeDTO);
         EmployeeDTO retrievedEmployee = userController.getEmployee(newEmployee.getId());
@@ -122,7 +122,7 @@ public class CritterFunctionalTest {
     }
 
     @Test
-    public void testChangeEmployeeAvailability() {
+    public void testChangeEmployeeAvailability() throws Exception{
         EmployeeDTO employeeDTO = createEmployeeDTO();
         EmployeeDTO emp1 = userController.saveEmployee(employeeDTO);
         Assertions.assertNull(emp1.getDaysAvailable());
