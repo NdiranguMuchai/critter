@@ -1,5 +1,10 @@
 package com.udacity.jdnd.course3.critter.schedule;
 
+import com.udacity.jdnd.course3.critter.model.Pet;
+import com.udacity.jdnd.course3.critter.model.Schedule;
+import com.udacity.jdnd.course3.critter.pet.PetDTO;
+import com.udacity.jdnd.course3.critter.service.ScheduleService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -10,15 +15,21 @@ import java.util.List;
 @RestController
 @RequestMapping("/schedule")
 public class ScheduleController {
+    private final ScheduleService scheduleService;
+
+    public ScheduleController(ScheduleService scheduleService) {
+        this.scheduleService = scheduleService;
+    }
 
     @PostMapping
     public ScheduleDTO createSchedule(@RequestBody ScheduleDTO scheduleDTO) {
-        throw new UnsupportedOperationException();
+        Schedule schedule = convertDTOToSchedule(scheduleDTO);
+        return convertScheduleToDTO(scheduleService.create(schedule));
     }
 
     @GetMapping
-    public List<ScheduleDTO> getAllSchedules() {
-        throw new UnsupportedOperationException();
+    public List<Schedule> getAllSchedules() {
+        return scheduleService.list();
     }
 
     @GetMapping("/pet/{petId}")
@@ -34,5 +45,19 @@ public class ScheduleController {
     @GetMapping("/customer/{customerId}")
     public List<ScheduleDTO> getScheduleForCustomer(@PathVariable long customerId) {
         throw new UnsupportedOperationException();
+    }
+
+
+
+    private ScheduleDTO convertScheduleToDTO(Schedule schedule){
+        ScheduleDTO scheduleDTO = new ScheduleDTO();
+        BeanUtils.copyProperties(schedule, scheduleDTO);
+        return scheduleDTO;
+    }
+
+    private Schedule convertDTOToSchedule(ScheduleDTO scheduleDTO){
+        Schedule schedule = new Schedule();
+        BeanUtils.copyProperties(scheduleDTO, schedule);
+        return schedule;
     }
 }

@@ -3,6 +3,7 @@ package com.udacity.jdnd.course3.critter;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.udacity.jdnd.course3.critter.model.Customer;
+import com.udacity.jdnd.course3.critter.model.Schedule;
 import com.udacity.jdnd.course3.critter.pet.PetController;
 import com.udacity.jdnd.course3.critter.pet.PetDTO;
 import com.udacity.jdnd.course3.critter.pet.PetType;
@@ -187,7 +188,7 @@ public class CritterFunctionalTest {
         Set<EmployeeSkill> skillSet =  Sets.newHashSet(EmployeeSkill.PETTING);
 
         scheduleController.createSchedule(createScheduleDTO(petList, employeeList, date, skillSet));
-        ScheduleDTO scheduleDTO = scheduleController.getAllSchedules().get(0);
+        ScheduleDTO scheduleDTO = convertScheduleToDTO(scheduleController.getAllSchedules().get(0));
 
         Assertions.assertEquals(scheduleDTO.getActivities(), skillSet);
         Assertions.assertEquals(scheduleDTO.getDate(), date);
@@ -314,5 +315,17 @@ public class CritterFunctionalTest {
         Customer customer = new Customer();
         BeanUtils.copyProperties(customerDTO, customer);
         return customer;
+    }
+
+    private ScheduleDTO convertScheduleToDTO(Schedule schedule){
+        ScheduleDTO scheduleDTO = new ScheduleDTO();
+        BeanUtils.copyProperties(schedule, scheduleDTO);
+        return scheduleDTO;
+    }
+
+    private Schedule convertDTOToSchedule(ScheduleDTO scheduleDTO){
+        Schedule schedule = new Schedule();
+        BeanUtils.copyProperties(scheduleDTO, schedule);
+        return schedule;
     }
 }
