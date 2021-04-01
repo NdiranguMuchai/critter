@@ -5,6 +5,9 @@ import com.udacity.jdnd.course3.critter.repository.EmployeeRepository;
 import com.udacity.jdnd.course3.critter.service.EmployeeService;
 import org.springframework.stereotype.Service;
 
+import java.time.DayOfWeek;
+import java.util.Set;
+
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
     private final EmployeeRepository employeeRepository;
@@ -25,7 +28,10 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public void setAvailability(Long employeeId) {
+    public void setAvailability(Set<DayOfWeek> availability, Long employeeId) throws Exception{
+        Employee employee = employeeRepository.findById(employeeId).orElseThrow(()->
+                new Exception("Employee with id "+employeeId+" not found"));
 
+        employee.setDaysAvailable(availability);
     }
 }

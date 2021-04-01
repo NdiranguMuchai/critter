@@ -305,17 +305,6 @@ public class CritterFunctionalTest {
         Assertions.assertEquals(sched1.getDate(), sched2.getDate());
     }
 
-    private CustomerDTO convertCustomerToDTO(Customer customer){
-        CustomerDTO customerDTO = new CustomerDTO();
-        BeanUtils.copyProperties(customer, customerDTO);
-        return customerDTO;
-    }
-
-    private Customer convertDTOToCustomer(CustomerDTO customerDTO){
-        Customer customer = new Customer();
-        BeanUtils.copyProperties(customerDTO, customer);
-        return customer;
-    }
 
     private ScheduleDTO convertScheduleToDTO(Schedule schedule){
         ScheduleDTO scheduleDTO = new ScheduleDTO();

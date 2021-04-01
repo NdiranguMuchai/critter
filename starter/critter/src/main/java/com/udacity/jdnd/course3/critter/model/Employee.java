@@ -2,18 +2,18 @@ package com.udacity.jdnd.course3.critter.model;
 
 import com.udacity.jdnd.course3.critter.user.EmployeeSkill;
 
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 import java.time.DayOfWeek;
 import java.util.HashSet;
 import java.util.Set;
 @Entity
 @Table(name = "employee")
 public class Employee extends DetailsHandler {
-    @Transient
+    @ElementCollection
     private Set<EmployeeSkill> skills = new HashSet<>();
-    @Transient
+    @ElementCollection
     private Set<DayOfWeek> daysAvailable = new HashSet<>();
 
     public Set<EmployeeSkill> getSkills() {
