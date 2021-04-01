@@ -6,7 +6,7 @@ import com.udacity.jdnd.course3.critter.service.PetService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.*;
 
 /**
  * Handles web requests related to Pets.
@@ -33,8 +33,11 @@ private final PetService petService;
     }
 
     @GetMapping
-    public List<Pet> getPets(){
-        return petService.list();
+    public List<PetDTO> getPets(){
+        List <Pet> pets= petService.list();
+//        return new LinkedList<>(convertPetListToDTO(pets));
+        return convertPetListToDTO(petService.list());
+
     }
 
 /**
@@ -44,14 +47,16 @@ private final PetService petService;
  */
 
     @GetMapping("/owner/{ownerId}")
-    public List<Pet> getPetsByOwner(@PathVariable long ownerId) {
-        return petService.findByOwnerId(ownerId);
+    public List<PetDTO> getPetsByOwner(@PathVariable long ownerId) {
+        return convertPetListToDTO(petService.findByOwnerId(ownerId));
 
     }
 
 
     @PutMapping("/{petId}/addOwner/{ownerId}")
     public  PetDTO addOwner(@PathVariable Long petId, @PathVariable Long ownerId) throws Exception{
+        PetDTO petDTO = convertPetToDTO(petService.findById(petId));
+        petDTO.setOwnerId(ownerId);
         return convertPetToDTO(petService.addOwner(petId, ownerId));
     }
 
@@ -65,6 +70,17 @@ private final PetService petService;
     private Pet convertDTOToPet(PetDTO petDTO){
         Pet pet = new Pet();
         BeanUtils.copyProperties(petDTO, pet);
+        petDTO.setOwnerId(pet.getOwner().getId());
         return pet;
+    }
+
+    private List<PetDTO> convertPetListToDTO(List<Pet> pets){
+        List<PetDTO> DTOList= new ArrayList<>();
+        BeanUtils.copyProperties(pets, DTOList);
+
+        Map<List<Pet>, List<PetDTO> > petAndDTOListMap = new HashMap<>();
+
+        return DTOList;
+
     }
 }
