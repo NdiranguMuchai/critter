@@ -11,6 +11,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -82,7 +83,13 @@ public class UserController {
 
     @GetMapping("/employee/availability")
     public List<EmployeeDTO> findEmployeesForService(@RequestBody EmployeeRequestDTO employeeDTO) {
-        throw new UnsupportedOperationException();
+        LocalDate localDate = employeeDTO.getDate();
+        HashSet<EmployeeSkill> skills = new HashSet<>(employeeDTO.getSkills());
+
+        return employeeService.findEmployeesForService(localDate, skills)
+                .stream()
+                .map(this::convertEmployeeToDTO)
+                .collect(Collectors.toList());
     }
 
     private CustomerDTO convertCustomerToDTO(Customer customer){

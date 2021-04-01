@@ -3,9 +3,12 @@ package com.udacity.jdnd.course3.critter.service.impl;
 import com.udacity.jdnd.course3.critter.model.Employee;
 import com.udacity.jdnd.course3.critter.repository.EmployeeRepository;
 import com.udacity.jdnd.course3.critter.service.EmployeeService;
+import com.udacity.jdnd.course3.critter.user.EmployeeSkill;
 import org.springframework.stereotype.Service;
 
 import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Set;
 
 @Service
@@ -33,5 +36,21 @@ public class EmployeeServiceImpl implements EmployeeService {
                 new Exception("Employee with id "+employeeId+" not found"));
 
         employee.setDaysAvailable(availability);
+    }
+
+    @Override
+    public Set<Employee> findEmployeesForService(LocalDate localDate, HashSet<EmployeeSkill> skills) {
+        Set<Employee> employeesWithSkills = new HashSet<>();
+        Set<Employee> availableEmployees = employeeRepository.findEmployeeByDaysAvailable(localDate.getDayOfWeek());
+
+        availableEmployees.forEach(employee -> {
+            boolean matchedSkillSet = employee.getSkills().containsAll(skills);
+
+            if (matchedSkillSet) {
+                employeesWithSkills.add(employee);
+            }
+        });
+
+        return employeesWithSkills;
     }
 }
