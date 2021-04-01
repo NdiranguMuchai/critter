@@ -60,14 +60,6 @@ private final CustomerService customerService;
     }
 
 
-    @PutMapping("/{petId}/addOwner/{ownerId}")
-    public  PetDTO addOwner(@PathVariable Long petId, @PathVariable Long ownerId) throws Exception{
-        PetDTO petDTO = convertPetToDTO(petService.findById(petId));
-        petDTO.setOwnerId(ownerId);
-        return convertPetToDTO(petService.addOwner(petId, ownerId));
-    }
-
-
     private PetDTO convertPetToDTO(Pet pet){
         PetDTO petDTO = new PetDTO();
         BeanUtils.copyProperties(pet, petDTO);

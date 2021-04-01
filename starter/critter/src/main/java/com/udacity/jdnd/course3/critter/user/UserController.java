@@ -6,13 +6,16 @@ import com.udacity.jdnd.course3.critter.model.Pet;
 import com.udacity.jdnd.course3.critter.pet.PetDTO;
 import com.udacity.jdnd.course3.critter.service.CustomerService;
 import com.udacity.jdnd.course3.critter.service.EmployeeService;
+import com.udacity.jdnd.course3.critter.service.PetService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.DayOfWeek;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Handles web requests related to Users.
@@ -25,10 +28,15 @@ import java.util.Set;
 public class UserController {
     private final CustomerService customerService;
     private final EmployeeService employeeService;
+    private final PetService petService;
 
-    public UserController(CustomerService customerService, EmployeeService employeeService) {
+    public UserController(CustomerService customerService,
+                          EmployeeService employeeService,
+                          PetService petService) {
+
         this.customerService = customerService;
         this.employeeService = employeeService;
+        this.petService = petService;
     }
 
     @PostMapping("/customer")
@@ -38,22 +46,23 @@ public class UserController {
     }
 
     @GetMapping("/customer")
-    public List<Customer> getAllCustomers(){
-        return customerService.list();
+    public List<CustomerDTO> getAllCustomers(){
+        return customerService.list()
+                .stream()
+                .map(this::convertCustomerToDTO)
+                .collect(Collectors.toList());
+
     }
 
     @GetMapping("/customer/pet/{petId}")
     public CustomerDTO getOwnerByPet(@PathVariable long petId) throws Exception{
-        return convertCustomerToDTO(customerService.findOwnerByPetId(petId));
+        Pet pet = petService.findById(petId);
+
+        Customer owner = customerService.findOwnerByPet(pet);
+
+        return convertCustomerToDTO(owner);
     }
 
-    /**
-     *consider using void
-     */
-    @PutMapping("/customer/{customerId}/addPet/{petId}")
-    public CustomerDTO addPetToOwner(@PathVariable Long customerId, @PathVariable Long petId) throws Exception{
-        return convertCustomerToDTO(customerService.addPet(customerId, petId));
-    }
 
     @PostMapping("/employee")
     public EmployeeDTO saveEmployee(@RequestBody EmployeeDTO employeeDTO) {
@@ -80,12 +89,29 @@ public class UserController {
     private CustomerDTO convertCustomerToDTO(Customer customer){
         CustomerDTO customerDTO = new CustomerDTO();
         BeanUtils.copyProperties(customer, customerDTO);
+
+        List<Long> petIds = new ArrayList<>();
+
+        if (customer.getPets() != null){
+            customer.getPets().forEach(pet -> petIds.add(pet.getId()));
+        }
+
+        customerDTO.setPetIds(petIds);
+
         return customerDTO;
     }
 
     private Customer convertDTOToCustomer(CustomerDTO customerDTO){
         Customer customer = new Customer();
         BeanUtils.copyProperties(customerDTO, customer);
+
+        List<Long> petIds = customerDTO.getPetIds();
+
+        if (petIds != null){
+            List<Pet> pets = petService.list();
+            customer.setPets(pets);
+        }
+
         return customer;
     }
 

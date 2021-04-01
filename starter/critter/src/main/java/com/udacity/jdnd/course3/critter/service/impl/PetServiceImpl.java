@@ -46,14 +46,4 @@ public class PetServiceImpl implements PetService {
 
     }
 
-
-    @Override
-    public Pet addOwner(Long petId, Long ownerId) throws Exception{
-        Pet pet = petRepository.findById(petId).orElseThrow(()-> new Exception("Pet with id  "+petId+" not found"));
-
-        Customer owner = customerRepository.findById(ownerId).orElseThrow(()-> new Exception("Owner with id  "+ownerId+" not found"));
-
-        pet.setOwner(owner);
-        return petRepository.save(pet);
-    }
 }
