@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -52,5 +53,10 @@ public class EmployeeServiceImpl implements EmployeeService {
         });
 
         return employeesWithSkills;
+    }
+
+    @Override
+    public List<Employee> list() {
+        return employeeRepository.findAll();
     }
 }

@@ -3,7 +3,6 @@ package com.udacity.jdnd.course3.critter.user;
 import com.udacity.jdnd.course3.critter.model.Customer;
 import com.udacity.jdnd.course3.critter.model.Employee;
 import com.udacity.jdnd.course3.critter.model.Pet;
-import com.udacity.jdnd.course3.critter.pet.PetDTO;
 import com.udacity.jdnd.course3.critter.service.CustomerService;
 import com.udacity.jdnd.course3.critter.service.EmployeeService;
 import com.udacity.jdnd.course3.critter.service.PetService;

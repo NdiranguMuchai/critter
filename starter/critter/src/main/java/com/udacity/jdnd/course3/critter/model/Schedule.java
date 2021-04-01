@@ -29,7 +29,7 @@ public class Schedule {
 
     private LocalDate date;
 
-    @Transient
+    @ElementCollection
     private Set<EmployeeSkill> activities = new HashSet<>();
 
     public Long getId() {
