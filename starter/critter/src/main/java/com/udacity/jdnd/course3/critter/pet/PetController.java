@@ -2,11 +2,13 @@ package com.udacity.jdnd.course3.critter.pet;
 
 import com.udacity.jdnd.course3.critter.model.Customer;
 import com.udacity.jdnd.course3.critter.model.Pet;
+import com.udacity.jdnd.course3.critter.service.CustomerService;
 import com.udacity.jdnd.course3.critter.service.PetService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Handles web requests related to Pets.
@@ -15,15 +17,21 @@ import java.util.*;
 @RequestMapping("/pet")
 public class PetController {
 private final PetService petService;
+private final CustomerService customerService;
 
-    public PetController(PetService petService) {
+    public PetController(PetService petService, CustomerService customerService) {
         this.petService = petService;
+        this.customerService = customerService;
     }
 
     @PostMapping
     public PetDTO savePet(@RequestBody PetDTO petDTO) {
-        Pet pet = convertDTOToPet(petDTO);
-        return convertPetToDTO(petService.save(pet));
+        Customer owner = customerService.findById(petDTO.getOwnerId());
+
+        Pet petToSave = convertDTOToPet(petDTO);
+        petToSave.setOwner(owner);
+
+        return convertPetToDTO(petService.save(petToSave));
     }
 
     @GetMapping("/{petId}")
@@ -32,24 +40,23 @@ private final PetService petService;
         return convertPetToDTO(pet);
     }
 
+
     @GetMapping
     public List<PetDTO> getPets(){
-        List <Pet> pets= petService.list();
-//        return new LinkedList<>(convertPetListToDTO(pets));
-        return convertPetListToDTO(petService.list());
-
+        return petService.list()
+                .stream()
+                .map(this::convertPetToDTO)
+                .collect(Collectors.toList());
     }
 
-/**
- *  try using PetDTO and not Pet check other methods that are using List<>
- *  alternatively use @JsonView approach
- *  add check for non existent owner
- */
 
     @GetMapping("/owner/{ownerId}")
     public List<PetDTO> getPetsByOwner(@PathVariable long ownerId) {
-        return convertPetListToDTO(petService.findByOwnerId(ownerId));
 
+        return petService.findByOwnerId(ownerId)
+                .stream()
+                .map(this::convertPetToDTO)
+                .collect(Collectors.toList());
     }
 
 
@@ -64,23 +71,18 @@ private final PetService petService;
     private PetDTO convertPetToDTO(Pet pet){
         PetDTO petDTO = new PetDTO();
         BeanUtils.copyProperties(pet, petDTO);
+
+        petDTO.setOwnerId(pet.getOwner().getId());
+
         return petDTO;
     }
 
     private Pet convertDTOToPet(PetDTO petDTO){
         Pet pet = new Pet();
         BeanUtils.copyProperties(petDTO, pet);
-        petDTO.setOwnerId(pet.getOwner().getId());
+
         return pet;
     }
 
-    private List<PetDTO> convertPetListToDTO(List<Pet> pets){
-        List<PetDTO> DTOList= new ArrayList<>();
-        BeanUtils.copyProperties(pets, DTOList);
 
-        Map<List<Pet>, List<PetDTO> > petAndDTOListMap = new HashMap<>();
-
-        return DTOList;
-
-    }
 }

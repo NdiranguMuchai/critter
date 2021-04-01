@@ -51,4 +51,9 @@ public class CustomerServiceImpl implements CustomerService {
         owner.getPets().add(pet);
        return customerRepository.save(owner);
     }
+
+    @Override
+    public Customer findById(Long id) {
+        return customerRepository.getOne(id);
+    }
 }

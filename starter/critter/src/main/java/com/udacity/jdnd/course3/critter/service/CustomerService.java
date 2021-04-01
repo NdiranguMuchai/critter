@@ -1,7 +1,6 @@
 package com.udacity.jdnd.course3.critter.service;
 
 import com.udacity.jdnd.course3.critter.model.Customer;
-import com.udacity.jdnd.course3.critter.model.Pet;
 
 import java.util.List;
 
@@ -10,4 +9,5 @@ public interface CustomerService {
     List<Customer>list();
     Customer findOwnerByPetId(Long petId) throws Exception;
     Customer addPet(Long ownerId, Long petId) throws Exception;
+    Customer findById(Long id) ;
 }

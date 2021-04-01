@@ -1,6 +1,5 @@
 package com.udacity.jdnd.course3.critter.model;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -14,6 +13,10 @@ public class Customer extends DetailsHandler {
 
     @OneToMany(mappedBy = "owner")
     private List<Pet> pets = new LinkedList<>();
+
+    public void addPet(Pet pet){
+        pets.add(pet);
+    }
 
     public String getPhoneNumber() {
         return phoneNumber;

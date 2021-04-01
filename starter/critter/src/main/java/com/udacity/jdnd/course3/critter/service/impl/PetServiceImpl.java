@@ -6,10 +6,12 @@ import com.udacity.jdnd.course3.critter.repository.CustomerRepository;
 import com.udacity.jdnd.course3.critter.repository.PetRepository;
 import com.udacity.jdnd.course3.critter.service.PetService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
+@Transactional
 public class PetServiceImpl implements PetService {
     private final PetRepository petRepository;
     private final CustomerRepository customerRepository;
@@ -21,7 +23,11 @@ public class PetServiceImpl implements PetService {
 
     @Override
     public Pet save(Pet pet) {
-        return petRepository.save(pet);
+        Pet petTOSave = petRepository.save(pet);
+        Customer owner = petTOSave.getOwner();
+        owner.addPet(petTOSave);
+        customerRepository.save(owner);
+        return  petTOSave;
     }
 
     @Override
