@@ -41,6 +41,7 @@ public class ScheduleController {
     public ScheduleDTO createSchedule(@RequestBody ScheduleDTO scheduleDTO) {
         Schedule schedule = convertDTOToSchedule(scheduleDTO);
         return convertScheduleToDTO(scheduleService.create(schedule));
+
     }
 
     @GetMapping
@@ -112,15 +113,31 @@ public class ScheduleController {
         List<Long> employeeIds = scheduleDTO.getEmployeeIds();
         List<Long> petIds = scheduleDTO.getPetIds();
 
+        List<Employee> employees = new ArrayList<>();
+        List<Pet> pets = new ArrayList<>();
+
         if (employeeIds != null){
-            List<Employee> employees = employeeService.list();
-            schedule.setEmployees(employees);
+            employeeIds.forEach(employeeId -> {
+                try {
+                    employees.add(employeeService.findById(employeeId));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
         }
 
         if (petIds != null){
-            List<Pet> pets = petService.list();
-            schedule.setPets(pets);
+            petIds.forEach(petId -> {
+                try {
+                    pets.add(petService.findById(petId));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
         }
+
+        schedule.setEmployees(employees);
+        schedule.setPets(pets);
 
         return schedule;
     }
