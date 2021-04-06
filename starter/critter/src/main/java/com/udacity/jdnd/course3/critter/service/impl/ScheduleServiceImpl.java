@@ -11,7 +11,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.LinkedList;
 import java.util.List;
+
 @Service
+@Transactional
 public class ScheduleServiceImpl implements ScheduleService {
     private final ScheduleRepository scheduleRepository;
 
@@ -39,7 +41,6 @@ public class ScheduleServiceImpl implements ScheduleService {
         return scheduleRepository.findScheduleByEmployees(employee);
     }
 
-    @Transactional
     @Override
     public List<Schedule> findScheduleByCustomer(Customer customer) {
         List<Pet> pets = customer.getPets();
